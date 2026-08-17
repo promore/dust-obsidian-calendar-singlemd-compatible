@@ -212,9 +212,10 @@ export default class NoteController {
     }
 
     private openNoteTabView(tFile: TFile): void {
+        const workspace = this.plugin.app.workspace;
         // 寻找已打开的标签页
         let targetView: MarkdownView | null = null;
-        app.workspace.iterateRootLeaves(leaf => {
+        workspace.iterateRootLeaves(leaf => {
             if (leaf.getViewState().type === "markdown" && leaf.getDisplayText() === tFile.basename) {
                 let view = leaf.view as MarkdownView;
                 if (view.file !== null && view.file.path === tFile.path && targetView === null) {
@@ -224,14 +225,14 @@ export default class NoteController {
         });
 
         if (targetView === null) {
-            targetView = new MarkdownView(app.workspace.getLeaf("tab"));
+            targetView = new MarkdownView(workspace.getLeaf("tab"));
             const targetLeaf: WorkspaceLeaf = targetView.leaf;
             targetLeaf.openFile(tFile).then(() => {
             });
         }
-        app.workspace.revealLeaf(targetView.leaf);
+        workspace.revealLeaf(targetView.leaf);
         // 移动焦点到笔记编辑区域
-        app.workspace.setActiveLeaf(targetView.leaf, {focus: true});
+        workspace.setActiveLeaf(targetView.leaf, {focus: true});
     }
 
 }

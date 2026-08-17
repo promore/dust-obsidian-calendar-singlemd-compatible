@@ -47,15 +47,27 @@ export default class NoteStatisticController {
     }
 
     public getNoteStatic(date: DateTime, noteType: NoteType): NoteStatistic {
+        // 先查找对应笔记文件（每日/每周/每月等）的统计信息
         const filename = this.plugin.noteController.getNoteFilename(date, noteType);
-        if (filename === null) {
-            return new NoteStatistic();
+        if (filename !== null) {
+            const noteStatistic = this.noteStatisticRegistry.get(filename);
+            if (noteStatistic !== undefined) {
+                return noteStatistic;
+            }
         }
-        const noteStatistic = this.noteStatisticRegistry.get(filename);
-        if (noteStatistic === undefined) {
-            return new NoteStatistic();
+
+        // 每日笔记不存在时，回退到月度笔记中对应日期小节（## yyyy-MM-dd）的统计信息
+        if (noteType === NoteType.DAILY) {
+            const monthlyFilename = this.plugin.noteController.getNoteFilename(date, NoteType.MONTHLY);
+            if (monthlyFilename !== null) {
+                const dayKey = `${monthlyFilename}#${date.toFormat("yyyy-MM-dd")}`;
+                const dayStatistic = this.noteStatisticRegistry.get(dayKey);
+                if (dayStatistic !== undefined) {
+                    return dayStatistic;
+                }
+            }
         }
-        return noteStatistic;
+        return new NoteStatistic();
     }
 
     // 添加一个文件信息统计任务，由界面触发
@@ -75,6 +87,13 @@ export default class NoteStatisticController {
     private async executeStaticByDateAndNoteType(date: DateTime, noteType: NoteType): Promise<void> {
         const filename = this.plugin.noteController.getNoteFilename(date, noteType);
         await this.executeStaticByFilename(filename);
+        // 每日笔记文件不存在时，回退到月度笔记文件，刷新其中对应日期小节的统计信息
+        if (noteType === NoteType.DAILY) {
+            const monthlyFilename = this.plugin.noteController.getNoteFilename(date, NoteType.MONTHLY);
+            if (monthlyFilename !== null && monthlyFilename !== filename) {
+                await this.executeStaticByFilename(monthlyFilename);
+            }
+        }
     }
 
     private async executeStaticByFilename(filename: string | null): Promise<void> {
@@ -125,10 +144,70 @@ export default class NoteStatisticController {
         const oldNoteStatistic = this.noteStatisticRegistry.get(filename);
         const isUpdated: boolean = oldNoteStatistic === undefined || !oldNoteStatistic.equals(newNoteStatistic);
         this.noteStatisticRegistry.set(filename, newNoteStatistic);
+
+        // 如果当前文件是月度笔记文件，解析其中每天（## yyyy-MM-dd）小节的统计信息
+        const isDaySectionUpdated = this.parseMonthlyDaySections(file, content, wordsPerDot, dotUpperLimit);
+
         // 判断信息有没有更新，如果有更新，就需要刷新界面
-        if (isUpdated) {
+        if (isUpdated || isDaySectionUpdated) {
             this.plugin.calendarViewController.requestFlush();
         }
+    }
+
+    // 解析月度笔记文件中每天（## yyyy-MM-dd）小节的统计信息，返回是否有更新
+    private parseMonthlyDaySections(file: TFile, content: string, wordsPerDot: number, dotUpperLimit: number): boolean {
+        const dayStatistics = NoteStatisticController.parseDaySections(content, wordsPerDot, dotUpperLimit);
+        if (dayStatistics.size === 0) {
+            return false;
+        }
+
+        // 确认当前文件确实是月度笔记文件，避免误解析其它文件
+        const firstDate = dayStatistics.keys().next().value as string;
+        const firstDateTime = DateTime.fromFormat(firstDate, "yyyy-MM-dd");
+        const monthlyFilename = this.plugin.noteController.getNoteFilename(firstDateTime, NoteType.MONTHLY);
+        if (monthlyFilename === null || monthlyFilename !== file.path) {
+            return false;
+        }
+
+        let isUpdated = false;
+        for (const [dateStr, statistic] of dayStatistics) {
+            const dayKey = `${file.path}#${dateStr}`;
+            const oldStatistic = this.noteStatisticRegistry.get(dayKey);
+            if (oldStatistic === undefined || !oldStatistic.equals(statistic)) {
+                this.noteStatisticRegistry.set(dayKey, statistic);
+                isUpdated = true;
+            }
+        }
+        return isUpdated;
+    }
+
+    // 解析内容中每天（## yyyy-MM-dd）小节的统计信息
+    private static parseDaySections(content: string, wordsPerDot: number, dotUpperLimit: number): Map<string, NoteStatistic> {
+        const result = new Map<string, NoteStatistic>();
+        const dayHeadingRegex = /^##\s+(\d{4}-\d{2}-\d{2})\s*$/gm;
+        const matches = [...content.matchAll(dayHeadingRegex)];
+        for (let i = 0; i < matches.length; i++) {
+            const dateStr = matches[i][1];
+            const sectionStart = (matches[i].index as number) + matches[i][0].length;
+            const sectionEnd = i + 1 < matches.length ? (matches[i + 1].index as number) : content.length;
+            let sectionContent = content.substring(sectionStart, sectionEnd);
+            // 截断到下一个一级标题（如下一个月的 # yyyy-MM），避免跨月统计
+            const nextH1 = sectionContent.search(/^#\s/m);
+            if (nextH1 !== -1) {
+                sectionContent = sectionContent.substring(0, nextH1);
+            }
+
+            const statistic = new NoteStatistic();
+            const totalWords = NoteStatisticController.countWords(sectionContent);
+            statistic.totalWords = totalWords;
+            statistic.totalDots = Math.ceil((totalWords + 1) / wordsPerDot);
+            if (statistic.totalDots >= dotUpperLimit) {
+                statistic.totalDots = dotUpperLimit;
+            }
+            statistic.hasUnfinishedTasks = NoteStatisticController.countTodos(sectionContent) !== 0;
+            result.set(dateStr, statistic);
+        }
+        return result;
     }
 
     private onFileModify(file: TAbstractFile): void {
@@ -141,8 +220,9 @@ export default class NoteStatisticController {
         }
         // 添加新文件的统计信息
         this.addTaskByFile(file);
-        // 删除旧文件的统计信息
-        if (!this.noteStatisticRegistry.delete(oldPath)) {
+        // 删除旧文件的统计信息（包括旧文件中每天小节的统计信息）
+        const deleted = this.noteStatisticRegistry.delete(oldPath) || this.removeDaySectionStatistics(oldPath);
+        if (!deleted) {
             return;
         }
         // 如果成功从注册表中删除了文件，则需要刷新日历界面
@@ -154,11 +234,25 @@ export default class NoteStatisticController {
             return;
         }
         const filename = file.path;
-        if (!this.noteStatisticRegistry.delete(filename)) {
+        const deleted = this.noteStatisticRegistry.delete(filename) || this.removeDaySectionStatistics(filename);
+        if (!deleted) {
             return;
         }
         // 如果成功从注册表中删除了文件，则需要刷新日历界面
         this.plugin.calendarViewController.requestFlush();
+    }
+
+    // 删除某个文件对应的所有天小节统计信息，返回是否有删除
+    private removeDaySectionStatistics(filename: string): boolean {
+        const prefix = `${filename}#`;
+        let deleted = false;
+        for (const key of this.noteStatisticRegistry.keys()) {
+            if (key.startsWith(prefix)) {
+                this.noteStatisticRegistry.delete(key);
+                deleted = true;
+            }
+        }
+        return deleted;
     }
 
     private static countWords(text: string): number {

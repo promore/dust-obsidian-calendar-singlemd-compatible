@@ -117,6 +117,9 @@ export default class DustCalendarPlugin extends Plugin {
         }
         else {
             leaf = workspace.getRightLeaf(false);
+            if (leaf === null) {
+                return;
+            }
             await leaf.setViewState({type: VIEW_TYPE_CALENDAR, active: true});
         }
 
