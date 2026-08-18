@@ -1,4 +1,4 @@
-import {MarkdownView, TAbstractFile, TFile, WorkspaceLeaf} from "obsidian";
+import {MarkdownView, TAbstractFile, TFile} from "obsidian";
 import {DateTime} from "luxon";
 import {NoteType, SelectedItemType} from "../base/enum";
 import SelectedItem from "../entity/SelectedItem";
@@ -182,7 +182,35 @@ export default class NoteController {
             return;
         }
         this.noteType = noteType;
+        // 每日笔记不存在时,回退到月度笔记(yyyy-MM.md)并定位到对应的 ## yyyy-MM-dd 标题;
+        // 若月度笔记也不存在,则沿用原有逻辑(打开/新建每日笔记)
+        if (noteType === NoteType.DAILY && !this.hasNote(date, NoteType.DAILY) && this.openMonthlyNoteAtDay(date)) {
+            return;
+        }
         this.openNoteByFilename(new Path(noteFilename));
+    }
+
+    // 每日笔记不存在时,打开月度笔记并跳转到 ## yyyy-MM-dd 标题。成功打开返回 true,否则返回 false
+    private openMonthlyNoteAtDay(date: DateTime): boolean {
+        const monthlyFilename = this.getNoteFilename(date, NoteType.MONTHLY);
+        if (monthlyFilename === null) {
+            return false;
+        }
+        const monthlyFile = this.plugin.app.vault.getAbstractFileByPath(monthlyFilename);
+        if (!(monthlyFile instanceof TFile)) {
+            return false;
+        }
+        const dateStr = date.toFormat("yyyy-MM-dd");
+        const dayHeadingRegex = new RegExp("^##\\s+" + dateStr + "\\s*$");
+        this.plugin.app.vault.cachedRead(monthlyFile).then(content => {
+            const lines = content.split("\n");
+            let line = lines.findIndex(line => dayHeadingRegex.test(line.trim()));
+            if (line === -1) {
+                line = 0;
+            }
+            this.openNoteTabView(monthlyFile, line);
+        });
+        return true;
     }
 
     public openNoteByFilename(filename: Path): void {
@@ -211,24 +239,35 @@ export default class NoteController {
         this.plugin.noteStatisticController.addTaskByFile(abstractFile);
     }
 
-    private openNoteTabView(tFile: TFile): void {
+    private openNoteTabView(tFile: TFile, line?: number): void {
         const workspace = this.plugin.app.workspace;
         // 寻找已打开的标签页
-        let targetView: MarkdownView | null = null;
+        let found: MarkdownView | null = null;
         workspace.iterateRootLeaves(leaf => {
             if (leaf.getViewState().type === "markdown" && leaf.getDisplayText() === tFile.basename) {
                 let view = leaf.view as MarkdownView;
-                if (view.file !== null && view.file.path === tFile.path && targetView === null) {
-                    targetView = view;
+                if (view.file !== null && view.file.path === tFile.path && found === null) {
+                    found = view;
                 }
             }
         });
 
-        if (targetView === null) {
+        let targetView: MarkdownView;
+        let isNewLeaf = false;
+        if (found === null) {
             targetView = new MarkdownView(workspace.getLeaf("tab"));
-            const targetLeaf: WorkspaceLeaf = targetView.leaf;
-            targetLeaf.openFile(tFile).then(() => {
+            isNewLeaf = true;
+        }
+        else {
+            targetView = found;
+        }
+
+        if (isNewLeaf) {
+            targetView.leaf.openFile(tFile, line !== undefined ? {eState: {line}} : undefined).then(() => {
             });
+        }
+        else if (line !== undefined) {
+            targetView.leaf.openFile(tFile, {eState: {line}});
         }
         workspace.revealLeaf(targetView.leaf);
         // 移动焦点到笔记编辑区域
