@@ -21,12 +21,6 @@
 
 修复了 `src/core/NoteController.ts` 中误用全局变量 `app`、以及 `src/main.ts` 中 `leaf` 可能为 `null` 的类型错误，使 `pnpm run build` 能够通过完整的 TypeScript 类型检查。
 
-### 3. 升级 lunar-typescript 修复国家假期标注
-
-原项目使用的 `lunar-typescript` 版本（`^1.7.2`）在 2026 年中国国家假期标注和调休信息处理上存在错误。
-
-本 fork 将 `lunar-typescript` 从 `^1.7.2` 升级到 `^1.8.6`，以正确显示 2026 年及之后的法定节假日与调休信息。
-
 ## 使用说明
 
 请参考原项目文档：<https://github.com/a-nano-dust/dust-obsidian-calendar>
