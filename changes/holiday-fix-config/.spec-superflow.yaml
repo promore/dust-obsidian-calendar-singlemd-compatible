@@ -2,18 +2,18 @@
 # Derived data. Always rebuildable from artifacts. Lost/corrupt → fall back to content-level detection.
 
 # === Core state ===
-state: executing
+state: closing
 workflow: full
-revision: 1
+revision: 2
 
 # === Hashes (fast staleness detection) ===
-artifacts_hash: sha256:dc9fe74364c631ef3132d4ebc8c2c32cdc9337ec20d30294514797bab2225ad5
+artifacts_hash: sha256:b66c76ad7e0e8636dea5c3c135b114dd34a26dffb46ceef07c995b04954d9cbf
 contract_hash: sha256:b2f170e689679594b451095841d6b2d9b911598151a081378220e7ef08028654
 
 # === Execution progress ===
 execution_mode: sdd
-execution_plan_hash: sha256:c4baeba40d9f0361bcf85f48b4b4ed73fabb0622d83b34e18755cc3279e48257
-execution_plan_revision: 1
+execution_plan_hash: sha256:4f5f96c15b9d7b5a5a43e0ab83cc6aa8db2ad63be14bb8e48eeab4a929ca1796
+execution_plan_revision: 2
 batches_completed: 3
 test_result: pass
 spec_merged: true
@@ -21,9 +21,9 @@ spec_publication_receipt: eyJ2ZXJzaW9uIjoxLCJzb3VyY2VfaGFzaCI6InNoYTI1NjpmODkzMD
 
 # === Metadata ===
 change_name: holiday-fix-config
-last_transition: 2026-08-18T02:07:58.359Z
-last_transition_from: approved-for-build
-last_transition_to: executing
+last_transition: 2026-08-18T02:16:06.526Z
+last_transition_from: executing
+last_transition_to: closing
 
 # === Decision points ===
 dp_0_decisions: 变更名称: holiday-fix-config; 意图: 为插件添加可配置的节假日 fix 数据功能，用户可在配置界面按年份(2025~2099)输入自定义节假日修正数据，插件加载时调用 HolidayUtil.fix 修正日历节假日显示; 工作流路径: full; artifact_language: 中文; 配置形式: 按年份分组的输入框(2025~2099); 范围: 保持聚焦; 沟通偏好: 逐项询问
@@ -36,8 +36,8 @@ dp_2_result: approved: 4个规划产物(proposal/specs/design/tasks)经用户批
 dp_2_timestamp: 2026-08-18T02:00:46Z
 dp_3_result: approved: 执行契约经用户批准; 2个wave(wave-1串行T1, wave-2并行T2+T3依赖wave-1); 覆盖REQ-HF-1~4全部需求
 dp_3_timestamp: 2026-08-18T02:03:31Z
-dp_4_result: sdd: plan revision 1; user-confirmed; user-selected execution mode: sdd (matches recommendation for parallel wave-2)
-dp_4_timestamp: 2026-08-18T02:03:55.087Z
+dp_4_result: sdd: plan revision 2; user-confirmed-revision; 刷新执行计划以匹配更新后的 tasks.md(标记任务完成); 波浪结构与模式保持不变
+dp_4_timestamp: 2026-08-18T02:15:54.538Z
 dp_5_result: null
 dp_5_timestamp: null
 dp_6_result: pass: 构建通过(pnpm run build exit 0); REQ-HF-1~4完整实现; D1~D4一致; 无越界范围; fix应用与边界用例运行时验证无异常

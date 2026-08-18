@@ -13,6 +13,8 @@
 
 ### T1：新增配置字段与默认数据
 
+- [x] 完成
+
 **受影响路径**: `src/entity/PluginSetting.ts`
 
 **内容**: 在 `PluginSetting` 中新增 `holidayFixData: Record<string, string>` 字段，并在构造函数中预置 `"2026"` 键及 2026 年全年 fix 数据（用户提供的字符串）。
@@ -23,6 +25,8 @@
 
 ### T2：加载时应用 fix 数据
 
+- [x] 完成
+
 **受影响路径**: `src/core/HolidayFixUtil.ts`（新增）、`src/main.ts`
 
 **内容**: 新增 `HolidayFixUtil.ts` 封装「遍历 `holidayFixData`，对每个年份调用 `HolidayUtil.fix(year, data)`」，空数据跳过、异常 try/catch 记录警告。在 `main.ts` 的 `onload` 中、`loadSetting()` 之后调用。
@@ -32,6 +36,8 @@
 **验证命令**: `pnpm run build` + 运行时抽查
 
 ### T3：配置界面输入框
+
+- [x] 完成
 
 **受影响路径**: `src/view/setting/MainSettingTab.tsx`
 
