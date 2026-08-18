@@ -258,11 +258,15 @@ export default class NoteController {
         // 寻找已打开的标签页
         let found: MarkdownView | null = null;
         workspace.iterateRootLeaves(leaf => {
-            if (leaf.getViewState().type === "markdown" && leaf.getDisplayText() === tFile.basename) {
-                let view = leaf.view as MarkdownView;
-                if (view.file !== null && view.file.path === tFile.path && found === null) {
-                    found = view;
+            try {
+                if (leaf.getViewState().type === "markdown" && leaf.getDisplayText() === tFile.basename) {
+                    let view = leaf.view as MarkdownView;
+                    if (view.file != null && view.file.path === tFile.path && found === null) {
+                        found = view;
+                    }
                 }
+            } catch (e) {
+                // 忽略遍历过程中失效的叶子,避免中断 iterateRootLeaves
             }
         });
 
