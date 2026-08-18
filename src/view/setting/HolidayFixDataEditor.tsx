@@ -49,7 +49,7 @@ export default function HolidayFixDataEditor({plugin}: { plugin: DustCalendarPlu
     const years = Object.keys(holidayFixData).sort();
 
     return (
-        <div style={{display: "flex", flexDirection: "column", gap: "12px", width: "100%", padding: "12px 0", borderBottom: "1px solid var(--background-modifier-border)"}}>
+        <div style={{display: "flex", flexDirection: "column", gap: "12px", width: "100%", padding: "12px", backgroundColor: "#F5F5F5", borderRadius: "6px", boxSizing: "border-box"}}>
             <div style={{display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px", flexWrap: "wrap"}}>
                 <div style={{fontWeight: "600", fontSize: "14px"}}>节假日修正数据</div>
                 <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
