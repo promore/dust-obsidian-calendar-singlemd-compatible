@@ -139,7 +139,7 @@ function DayItem({
     }
 
     return <div className={bodyStyle} onClick={onClickCallback}
-                onDoubleClick={() => plugin.noteController.openNoteBySelectedItem(selectedItem)}>
+                onDoubleClick={() => plugin.noteController.openNoteBySelectedItem(newSelectItem)}>
         <DayItemBody targetDay={targetDay} dayListOfMonthView={dayListOfMonthView} isSelected={isSelected}/>
         {
             plugin.calendarViewController.getShouldDisplayLunarInfo()
