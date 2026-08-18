@@ -55,6 +55,7 @@ export default function HolidayFixDataEditor({plugin}: { plugin: DustCalendarPlu
             </div>
             <div className="setting-item-description">
                 <div>按年份输入 lunar-typescript 的节假日修正数据（HolidayUtil.fix），用于修正官方默认节假日与调休信息。</div>
+                <div>请前往 <a href="https://6tail.cn/calendar/api.html#holiday-util.fix.html" target="_blank" rel="noopener">6tail.cn/calendar（HolidayUtil.fix）</a> 获取最新年份的节假日字符串并粘贴到对应年份。</div>
             </div>
         </div>
         <div className="setting-item-control">
