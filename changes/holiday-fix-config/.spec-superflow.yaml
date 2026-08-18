@@ -15,9 +15,9 @@ execution_mode: sdd
 execution_plan_hash: sha256:c4baeba40d9f0361bcf85f48b4b4ed73fabb0622d83b34e18755cc3279e48257
 execution_plan_revision: 1
 batches_completed: 3
-test_result: null
-spec_merged: false
-spec_publication_receipt: null
+test_result: pass
+spec_merged: true
+spec_publication_receipt: eyJ2ZXJzaW9uIjoxLCJzb3VyY2VfaGFzaCI6InNoYTI1NjpmODkzMDY5OTIwMzdlZTdhZTNjMjY5ZWQ5OTFjZDc3NzVjYWNjNjdiOTY1MmJiZWE3OGVhNWJmZTkwYjJjZDNiIiwiYmFzZWxpbmVfYmVmb3JlX2hhc2giOiJzaGEyNTY6YmQ1OTVlYjNlMmIyOWJjN2IwMWM4OGZmN2FhOWVkNDNkOTRlMzNiMTMzYTBhNzA1NTljYzFlNTY3NmJmYmQxOCIsImJhc2VsaW5lX2FmdGVyX2hhc2giOiJzaGEyNTY6ZWIzM2NmYmM2NjEyYzI5YmRhOTllZWUwYTEzYWE1YjNlZDE3NjY5NDBiYjI0YzdjODFkNDU1MjY2MTVlNzIzNyIsImNhcGFiaWxpdGllcyI6WyJob2xpZGF5LWZpeC1jb25maWciXX0
 
 # === Metadata ===
 change_name: holiday-fix-config
@@ -30,8 +30,8 @@ dp_0_decisions: 变更名称: holiday-fix-config; 意图: 为插件添加可配�
 dp_0_result: confirmed
 dp_0_confirmed: true
 dp_0_timestamp: 2026-08-18T01:58:21Z
-dp_1_result: null
-dp_1_timestamp: null
+dp_1_result: confirmed: 需求经 DP-2 工件审查(approved)间接确认; 变更范围(holidayFixData配置/按年份输入/加载应用/持久化/默认2026数据)已明确
+dp_1_timestamp: 2026-08-18T02:14:05Z
 dp_2_result: approved: 4个规划产物(proposal/specs/design/tasks)经用户批准且通过五问题盲读检查; 变更: 新增holidayFixData配置字段,按年份(2025~2099)输入HolidayUtil.fix数据,加载时应用,持久化到data.json,默认提供2026年数据
 dp_2_timestamp: 2026-08-18T02:00:46Z
 dp_3_result: approved: 执行契约经用户批准; 2个wave(wave-1串行T1, wave-2并行T2+T3依赖wave-1); 覆盖REQ-HF-1~4全部需求
@@ -40,7 +40,7 @@ dp_4_result: sdd: plan revision 1; user-confirmed; user-selected execution mode:
 dp_4_timestamp: 2026-08-18T02:03:55.087Z
 dp_5_result: null
 dp_5_timestamp: null
-dp_6_result: null
-dp_6_timestamp: null
-dp_7_result: null
-dp_7_timestamp: null
+dp_6_result: pass: 构建通过(pnpm run build exit 0); REQ-HF-1~4完整实现; D1~D4一致; 无越界范围; fix应用与边界用例运行时验证无异常
+dp_6_timestamp: 2026-08-18T02:09:17Z
+dp_7_result: confirmed: 归档完成; 构建通过; REQ-HF-1~4实现; 审计报告已生成; delta spec已发布到specs/; 2026默认fix数据已内置
+dp_7_timestamp: 2026-08-18T02:14:10Z
