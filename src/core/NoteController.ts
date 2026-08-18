@@ -177,14 +177,28 @@ export default class NoteController {
     }
 
     public openNoteByNoteType(date: DateTime, noteType: NoteType): void {
-        const noteFilename = this.getNoteFilename(date, noteType);
-        if (noteFilename === null) {
+        this.noteType = noteType;
+
+        // 每日笔记: 每日笔记可用(已配置且文件存在)则打开每日笔记;否则回退到月度笔记(yyyy-MM.md)并定位到 ## yyyy-MM-dd
+        if (noteType === NoteType.DAILY) {
+            const dailyFilename = this.getNoteFilename(date, NoteType.DAILY);
+            if (dailyFilename !== null && this.hasNote(date, NoteType.DAILY)) {
+                this.openNoteByFilename(new Path(dailyFilename));
+                return;
+            }
+            // 每日笔记不可用时,优先回退到月度笔记
+            if (this.openMonthlyNoteAtDay(date)) {
+                return;
+            }
+            // 月度笔记也不存在时,沿用原有每日笔记打开/创建逻辑
+            if (dailyFilename !== null) {
+                this.openNoteByFilename(new Path(dailyFilename));
+            }
             return;
         }
-        this.noteType = noteType;
-        // 每日笔记不存在时,回退到月度笔记(yyyy-MM.md)并定位到对应的 ## yyyy-MM-dd 标题;
-        // 若月度笔记也不存在,则沿用原有逻辑(打开/新建每日笔记)
-        if (noteType === NoteType.DAILY && !this.hasNote(date, NoteType.DAILY) && this.openMonthlyNoteAtDay(date)) {
+
+        const noteFilename = this.getNoteFilename(date, noteType);
+        if (noteFilename === null) {
             return;
         }
         this.openNoteByFilename(new Path(noteFilename));
