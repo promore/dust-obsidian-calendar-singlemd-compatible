@@ -14,7 +14,7 @@ contract_hash: sha256:b2f170e689679594b451095841d6b2d9b911598151a081378220e7ef08
 execution_mode: sdd
 execution_plan_hash: sha256:c4baeba40d9f0361bcf85f48b4b4ed73fabb0622d83b34e18755cc3279e48257
 execution_plan_revision: 1
-batches_completed: 0
+batches_completed: 3
 test_result: null
 spec_merged: false
 spec_publication_receipt: null
