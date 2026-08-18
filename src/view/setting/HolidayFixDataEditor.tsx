@@ -49,48 +49,51 @@ export default function HolidayFixDataEditor({plugin}: { plugin: DustCalendarPlu
     const years = Object.keys(holidayFixData).sort();
 
     return <>
-        <div className="setting-item-info">
-            <div className="setting-item-name">
-                节假日修正数据
+        <div style={{display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px", width: "100%", flexWrap: "wrap"}}>
+            <div className="setting-item-info" style={{border: "none", padding: "0"}}>
+                <div className="setting-item-name">
+                    节假日修正数据
+                </div>
             </div>
-            <div className="setting-item-description">
-                <div>按年份输入 lunar-typescript 的节假日修正数据（HolidayUtil.fix），用于修正官方默认节假日与调休信息。</div>
-                <div>请前往 <a href="https://6tail.cn/calendar/api.html#holiday-util.fix.html" target="_blank" rel="noopener">6tail.cn/calendar（HolidayUtil.fix）</a> 获取最新年份的节假日字符串并粘贴到对应年份。</div>
+            <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
+                <input
+                    type="text"
+                    value={newYear}
+                    onChange={onNewYearChange}
+                    placeholder="年份（2025~2099）"
+                    style={{width: "120px"}}
+                />
+                <button
+                    type="button"
+                    onClick={addYear}
+                    disabled={!newYear.trim()}
+                >新增年份</button>
             </div>
         </div>
-        <div className="setting-item-control">
-            <div>
-                {years.map(year => (
-                    <div key={year} style={{display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px"}}>
-                        <span style={{width: "48px", fontWeight: "bold"}}>{year}</span>
-                        <input
-                            type="text"
-                            value={holidayFixData[year] || ""}
-                            onChange={(e) => updateYear(year, e.target.value)}
-                            style={{flex: 1, minWidth: "200px"}}
-                        />
-                        <button
-                            type="button"
-                            onClick={() => removeYear(year)}
-                            aria-label={`删除 ${year} 年数据`}
-                        >删除</button>
-                    </div>
-                ))}
-                <div style={{display: "flex", alignItems: "center", gap: "8px", marginTop: "6px"}}>
+        <div className="setting-item-description" style={{marginTop: "8px"}}>
+            <div>按年份输入 lunar-typescript 的节假日修正数据（HolidayUtil.fix），用于修正官方默认节假日与调休信息。</div>
+            <div>请前往 <a href="https://6tail.cn/calendar/api.html#holiday-util.fix.html" target="_blank" rel="noopener">6tail.cn/calendar（HolidayUtil.fix）</a> 获取最新年份的节假日字符串并粘贴到对应年份。</div>
+        </div>
+        <div style={{marginTop: "12px", width: "100%"}}>
+            {years.map(year => (
+                <div key={year} style={{display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px"}}>
+                    <span style={{width: "48px", fontWeight: "bold"}}>{year}</span>
                     <input
                         type="text"
-                        value={newYear}
-                        onChange={onNewYearChange}
-                        placeholder="年份（2025~2099）"
-                        style={{width: "120px"}}
+                        value={holidayFixData[year] || ""}
+                        onChange={(e) => updateYear(year, e.target.value)}
+                        style={{flex: 1, minWidth: "200px"}}
                     />
                     <button
                         type="button"
-                        onClick={addYear}
-                        disabled={!newYear.trim()}
-                    >新增年份</button>
+                        onClick={() => removeYear(year)}
+                        aria-label={`删除 ${year} 年数据`}
+                    >删除</button>
                 </div>
-            </div>
+            ))}
+            {years.length === 0 && (
+                <div style={{color: "var(--text-muted)", fontSize: "12px"}}>尚未配置任何年份的节假日修正数据。</div>
+            )}
         </div>
     </>
 }
