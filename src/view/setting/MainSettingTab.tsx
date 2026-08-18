@@ -123,7 +123,8 @@ export default class MainSettingTab extends PluginSettingTab {
 
     private displayHolidayFixData(): void {
         const {containerEl} = this;
-        this.holidayFixDataRoot = createRoot(containerEl);
+        const holidayFixDataContainer = containerEl.createDiv();
+        this.holidayFixDataRoot = createRoot(holidayFixDataContainer);
         this.holidayFixDataRoot.render(
             <HolidayFixDataEditor plugin={this.plugin}/>
         );
