@@ -9,6 +9,7 @@ import ViewController from "./core/ViewController";
 import NoteStatisticController from "./core/NoteStatisticController";
 import {CalendarViewController} from "./core/CalendarViewController";
 import {NoteType} from "./base/enum";
+import HolidayFixUtil from "./core/HolidayFixUtil";
 
 
 // 插件对象
@@ -37,6 +38,7 @@ export default class DustCalendarPlugin extends Plugin {
     async onload() {
         // 加载插件设置
         await this.database.loadSetting();
+        HolidayFixUtil.applyFix(this.database.setting.holidayFixData);
         this.templateController.updateTemplatePlugin(this.database.setting.templatePlugin);
         this.viewController.setQuarterNameMode(this.database.setting.quarterNameMode);
 

@@ -11,6 +11,7 @@ import NotePattern from "./NotePattern";
 import DotUpperLimitSelect from "./DotUpperLimitSelect";
 import TodoAnnotationModeSelect from "./TodoAnnotationModeSelect";
 import WordsPerDotInput from "./WordsPerDotInput";
+import HolidayFixDataEditor from "./HolidayFixDataEditor";
 
 
 export default class MainSettingTab extends PluginSettingTab {
@@ -23,6 +24,7 @@ export default class MainSettingTab extends PluginSettingTab {
     private dotUpperLimitSelectRoot: Root | null;
     private todoAnnotationModeSelectRoot: Root | null;
     private templatePluginSelectRoot: Root | null;
+    private holidayFixDataRoot: Root | null;
     private dailyNotePatternRoot: Root | null;
     private dailyNoteTemplateRoot: Root | null;
     private weeklyNotePatternRoot: Root | null;
@@ -44,6 +46,7 @@ export default class MainSettingTab extends PluginSettingTab {
         this.dotUpperLimitSelectRoot = null;
         this.todoAnnotationModeSelectRoot = null;
         this.templatePluginSelectRoot = null;
+        this.holidayFixDataRoot = null;
         this.dailyNotePatternRoot = null;
         this.dailyNoteTemplateRoot = null;
         this.weeklyNotePatternRoot = null;
@@ -61,6 +64,7 @@ export default class MainSettingTab extends PluginSettingTab {
         containerEl.empty();
         this.displayShouldDisplayLunarInfoToggle();
         this.displayShouldDisplayHolidayInfo();
+        this.displayHolidayFixData();
         this.displayFontSizeChangeModeSelect();
         this.displayImmutableFontSizeSlider();
         this.displayQuarterNameModeSelect();
@@ -115,6 +119,15 @@ export default class MainSettingTab extends PluginSettingTab {
                 this.plugin.calendarViewController.setShouldDisplayHolidayInfo(value);
             });
         });
+    }
+
+    private displayHolidayFixData(): void {
+        const {containerEl} = this;
+        let settingComponent = new Setting(containerEl);
+        this.holidayFixDataRoot = createRoot(settingComponent.settingEl);
+        this.holidayFixDataRoot.render(
+            <HolidayFixDataEditor plugin={this.plugin}/>
+        );
     }
 
     private displayImmutableFontSizeSlider(): void {

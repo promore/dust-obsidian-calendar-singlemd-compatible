@@ -35,6 +35,14 @@ export class CalendarViewController {
         return this.plugin.database.setting.shouldDisplayHolidayInfo = shouldDisplayHolidayInfo;
     }
 
+    public getHolidayFixData(): Record<string, string> {
+        return this.plugin.database.setting.holidayFixData;
+    }
+
+    public setHolidayFixData(holidayFixData: Record<string, string>): void {
+        this.plugin.database.setting.holidayFixData = holidayFixData;
+    }
+
 
     // 立即刷新
     public forceFlush(): void {
