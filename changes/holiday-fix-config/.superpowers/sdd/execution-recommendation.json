@@ -1,0 +1,50 @@
+{
+  "recommendation": {
+    "available_modes": [
+      "inline",
+      "batch-inline",
+      "sdd"
+    ],
+    "recommendation": {
+      "mode": "sdd",
+      "reasons": [
+        "The declared execution waves include parallel work, which SDD can dispatch and review independently."
+      ]
+    },
+    "facts": {
+      "workflow": "full",
+      "documented_task_count": 0,
+      "planned_task_count": 3,
+      "planned_wave_count": 2,
+      "has_parallel_wave": true,
+      "inline_threshold": 3
+    }
+  },
+  "waves": [
+    {
+      "id": "wave-1",
+      "strategy": "serial",
+      "tasks": [
+        "T1"
+      ],
+      "depends_on": []
+    },
+    {
+      "id": "wave-2",
+      "strategy": "parallel",
+      "tasks": [
+        "T2",
+        "T3"
+      ],
+      "depends_on": [
+        "wave-1"
+      ]
+    }
+  ],
+  "artifacts_hash": "sha256:dc9fe74364c631ef3132d4ebc8c2c32cdc9337ec20d30294514797bab2225ad5",
+  "contract_hash": "sha256:b2f170e689679594b451095841d6b2d9b911598151a081378220e7ef08028654",
+  "workflow": "full",
+  "execution_plan_revision_at_recommendation": null,
+  "created_at": "2026-08-18T02:03:37.672Z",
+  "hash": "sha256:1c42df7abdc516ea33c3900cd83bd9649756f7ce2b5d2405b5d1fec7396ebdcd"
+}

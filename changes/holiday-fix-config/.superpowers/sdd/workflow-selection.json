@@ -1,0 +1,60 @@
+{
+  "schema_version": 2,
+  "available_modes": [
+    "full",
+    "hotfix",
+    "tweak",
+    "quick",
+    "lightweight"
+  ],
+  "facts": {
+    "task_count": 4,
+    "file_count": 4,
+    "config_doc_only": "no",
+    "schema_api_change": "no",
+    "new_module": "no",
+    "behavioral_constraint_change": "no",
+    "cross_module_change": "yes",
+    "uncertainty": "low",
+    "request_kind": "standard",
+    "affected_paths": null,
+    "exclusion_checks": {
+      "production_behavior": "unknown",
+      "public_boundary": "unknown",
+      "installer": "unknown",
+      "state_machine": "unknown",
+      "external_side_effect": "unknown",
+      "data_permission_config_semantics": "unknown",
+      "expected_behavior_clear": "unknown",
+      "verification_reproducible": "unknown",
+      "impact_paths_complete": "unknown"
+    }
+  },
+  "missing_facts": [],
+  "status": "ready",
+  "recommendation": {
+    "mode": "full",
+    "reasons": [
+      "Risk signals require the user to choose Quick or Full."
+    ],
+    "risk_reasons": [
+      "cross-module change"
+    ]
+  },
+  "created_at": "2026-08-18T01:55:03.683Z",
+  "selection": {
+    "mode": "full",
+    "reason": "用户选择 Full 流程，跨模块变更（配置界面+插件加载逻辑），需要完整规划产物与契约",
+    "followed_recommendation": true,
+    "acknowledged_non_recommendation": false,
+    "accepted_automatically": false,
+    "risk_override": false,
+    "verification_strategy": null,
+    "scope_confirmation": null,
+    "verification_result": null,
+    "escalation_reason": null,
+    "confirmed_at": "2026-08-18T01:58:19.229Z",
+    "selected_at": "2026-08-18T01:58:19.229Z"
+  },
+  "hash": "sha256:8b89b656cebcdd7244bde69fd670166384bc5450afff3320ba8dc14931db46bf"
+}

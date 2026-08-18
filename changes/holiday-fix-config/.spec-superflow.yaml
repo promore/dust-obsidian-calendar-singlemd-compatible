@@ -1,0 +1,46 @@
+# .spec-superflow.yaml — lightweight state machine
+# Derived data. Always rebuildable from artifacts. Lost/corrupt → fall back to content-level detection.
+
+# === Core state ===
+state: exploring
+workflow: full
+revision: 1
+
+# === Hashes (fast staleness detection) ===
+artifacts_hash: sha256:dc9fe74364c631ef3132d4ebc8c2c32cdc9337ec20d30294514797bab2225ad5
+contract_hash: sha256:b2f170e689679594b451095841d6b2d9b911598151a081378220e7ef08028654
+
+# === Execution progress ===
+execution_mode: sdd
+execution_plan_hash: sha256:c4baeba40d9f0361bcf85f48b4b4ed73fabb0622d83b34e18755cc3279e48257
+execution_plan_revision: 1
+batches_completed: 0
+test_result: null
+spec_merged: false
+spec_publication_receipt: null
+
+# === Metadata ===
+change_name: holiday-fix-config
+last_transition: 2026-08-18T02:02:03.321Z
+last_transition_from: null
+last_transition_to: null
+
+# === Decision points ===
+dp_0_decisions: 变更名称: holiday-fix-config; 意图: 为插件添加可配置的节假日 fix 数据功能，用户可在配置界面按年份(2025~2099)输入自定义节假日修正数据，插件加载时调用 HolidayUtil.fix 修正日历节假日显示; 工作流路径: full; artifact_language: 中文; 配置形式: 按年份分组的输入框(2025~2099); 范围: 保持聚焦; 沟通偏好: 逐项询问
+dp_0_result: confirmed
+dp_0_confirmed: true
+dp_0_timestamp: 2026-08-18T01:58:21Z
+dp_1_result: null
+dp_1_timestamp: null
+dp_2_result: approved: 4个规划产物(proposal/specs/design/tasks)经用户批准且通过五问题盲读检查; 变更: 新增holidayFixData配置字段,按年份(2025~2099)输入HolidayUtil.fix数据,加载时应用,持久化到data.json,默认提供2026年数据
+dp_2_timestamp: 2026-08-18T02:00:46Z
+dp_3_result: approved: 执行契约经用户批准; 2个wave(wave-1串行T1, wave-2并行T2+T3依赖wave-1); 覆盖REQ-HF-1~4全部需求
+dp_3_timestamp: 2026-08-18T02:03:31Z
+dp_4_result: sdd: plan revision 1; user-confirmed; user-selected execution mode: sdd (matches recommendation for parallel wave-2)
+dp_4_timestamp: 2026-08-18T02:03:55.087Z
+dp_5_result: null
+dp_5_timestamp: null
+dp_6_result: null
+dp_6_timestamp: null
+dp_7_result: null
+dp_7_timestamp: null
