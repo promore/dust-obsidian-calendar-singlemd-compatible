@@ -2,7 +2,7 @@
 # Derived data. Always rebuildable from artifacts. Lost/corrupt → fall back to content-level detection.
 
 # === Core state ===
-state: exploring
+state: executing
 workflow: full
 revision: 1
 
@@ -21,9 +21,9 @@ spec_publication_receipt: null
 
 # === Metadata ===
 change_name: holiday-fix-config
-last_transition: 2026-08-18T02:02:03.321Z
-last_transition_from: null
-last_transition_to: null
+last_transition: 2026-08-18T02:07:58.359Z
+last_transition_from: approved-for-build
+last_transition_to: executing
 
 # === Decision points ===
 dp_0_decisions: 变更名称: holiday-fix-config; 意图: 为插件添加可配置的节假日 fix 数据功能，用户可在配置界面按年份(2025~2099)输入自定义节假日修正数据，插件加载时调用 HolidayUtil.fix 修正日历节假日显示; 工作流路径: full; artifact_language: 中文; 配置形式: 按年份分组的输入框(2025~2099); 范围: 保持聚焦; 沟通偏好: 逐项询问
